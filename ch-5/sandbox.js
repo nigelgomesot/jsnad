@@ -37,19 +37,98 @@
 // rufus.woof();
 // rufus.howl();
 
-const wolf = {
-  howl: function() { console.log(this.name + ': awoooo')}
-};
-const dog = Object.create(wolf, {
-  woof: { value: function() { console.log(this.name + ': woof')}}
-});
-function createDog(name) {
-  return Object.create(dog, {
-    name: { value: `${name} the dog:` }
-  })
+// const wolf = {
+//   howl: function() { console.log(this.name + ': awoooo')}
+// };
+// const dog = Object.create(wolf, {
+//   woof: { value: function() { console.log(this.name + ': woof')}}
+// });
+// function createDog(name) {
+//   return Object.create(dog, {
+//     name: { value: `${name} the dog:` }
+//   })
+// }
+// const rufus = createDog('rufus');
+// rufus.woof();
+// rufus.howl();
+// console.log(Object.getPrototypeOf(rufus) === dog);
+// console.log(Object.getPrototypeOf(dog) === wolf);
+
+
+// function Wolf (name) {
+//   this.name = name;
+// }
+// Wolf.prototype.howl = function() {
+//   console.log(this.name + ': awoooo');
+// }
+// function Dog(name) {
+//   Wolf.call(this, name + ' the dog');
+// }
+// function inherit (proto) {
+//   function ChainLink() {}
+//   ChainLink.prototype = proto;
+
+//   return new ChainLink();
+// }
+// Dog.prototype = inherit(Wolf.prototype);
+// Dog.prototype.woof = function() {
+//   console.log(this.name + ': woof');
+// }
+// const rufus = new Dog('rufus');
+// rufus.woof();
+// rufus.howl();
+// console.log(Object.getPrototypeOf(rufus) === Dog.prototype);
+// console.log(Object.getPrototypeOf(Dog.prototype) === Wolf.prototype);
+
+// function Wolf (name) {
+//   this.name = name;
+// }
+// function Dog (name) {
+//   Wolf.call(this, "this the dog" + name);
+// }
+// Dog.prototype = Object.create(Wolf.prototype);
+// console.log(Object.getPrototypeOf(Dog.prototype) === Wolf.prototype);
+
+// // NOT WORKING
+// const util = require('util');
+// function Wolf (name) {
+//   this.name = name;
+// }
+// Wolf.prototype.howl = function() {
+//   console.log(this.name + ": awooo");
+// }
+// function Dog (name) {
+//   Wolf.call(this, name + " the dog")
+// }
+// Dog.prototype.woof = function() {
+//   console.log(this.name + ": woof");
+// }
+// util.inherits(Dog.prototype, Wolf.prototype);
+// rufus = new Dog('rufus');
+// rufus.woof();
+// rufus.howl();
+
+
+class Wolf {
+  constructor(name) {
+    this.name = name;
+  }
+
+  howl() {
+    console.log(this.name + ": awooo");
+  }
 }
-const rufus = createDog('rufus');
+class Dog extends Wolf {
+  constructor(name) {
+    super(name + " the dog");
+  }
+
+  woof() {
+    console.log(this.name + ': woof');
+  }
+}
+const rufus = new Dog('rufus');
 rufus.woof();
 rufus.howl();
-console.log(Object.getPrototypeOf(rufus) === dog);
-console.log(Object.getPrototypeOf(dog) === wolf);
+console.log(Object.getPrototypeOf(rufus) === Dog.prototype);
+console.log(Object.getPrototypeOf(Dog.prototype) === Wolf.prototype);
