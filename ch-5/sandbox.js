@@ -109,26 +109,103 @@
 // rufus.howl();
 
 
-class Wolf {
-  constructor(name) {
-    this.name = name;
+// class Wolf {
+//   constructor(name) {
+//     this.name = name;
+//   }
+
+//   howl() {
+//     console.log(this.name + ": awooo");
+//   }
+// }
+// class Dog extends Wolf {
+//   constructor(name) {
+//     super(name + " the dog");
+//   }
+
+//   woof() {
+//     console.log(this.name + ': woof');
+//   }
+// }
+// const rufus = new Dog('rufus');
+// rufus.woof();
+// rufus.howl();
+// console.log(Object.getPrototypeOf(rufus) === Dog.prototype);
+// console.log(Object.getPrototypeOf(Dog.prototype) === Wolf.prototype);
+
+
+// Closure Scope
+// function outerFn() {
+//   let foo = 'foo';
+
+//   function print() { console.log(foo) };
+
+//   print();
+
+//   foo = 'bar';
+
+//   print();
+// }
+// outerFn();
+
+// function outerFn() {
+//   let foo = 'foo';
+
+//   function print(foo) { console.log(foo) };
+
+//   print(1);
+
+//   foo = 'bar';
+
+//   print(2);
+// }
+// outerFn();
+
+// function init(type) {
+//   let id = 0;
+
+//   return (name) => {
+//     id += 1;
+
+//     return { id: id, type: type, name: name };
+//   }
+// }
+// const createUser = init('User');
+// const createBook = init('Book');
+// const john = createUser('John');
+// const jane = createUser('Jane');
+// const shane = createUser('Shane');
+// const book1 = createBook('Book1');
+// const book2 = createBook('Book2');
+// console.log(john);
+// console.log(jane);
+// console.log(shane);
+// console.log(book1);
+// console.log(book2);
+
+function wolf(name) {
+  const howl = () => {
+    console.log(name + ": awooo");
   }
 
-  howl() {
-    console.log(this.name + ": awooo");
-  }
+  return { howl: howl };
 }
-class Dog extends Wolf {
-  constructor(name) {
-    super(name + " the dog");
+function dog(name) {
+  name = name + " the dog";
+
+  const woof = () => {
+    console.log(name + ": wooof");
   }
 
-  woof() {
-    console.log(this.name + ': woof');
-  }
+  return {
+    woof: woof,
+    ...wolf(name)
+  };
 }
-const rufus = new Dog('rufus');
+const rufus = dog('Rufus');
 rufus.woof();
 rufus.howl();
-console.log(Object.getPrototypeOf(rufus) === Dog.prototype);
-console.log(Object.getPrototypeOf(Dog.prototype) === Wolf.prototype);
+const drufus = wolf('Drufus');
+drufus.howl();
+
+
