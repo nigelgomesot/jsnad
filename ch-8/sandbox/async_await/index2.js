@@ -29,10 +29,22 @@ const read = promisify(cb => {
   readFile(mediumFile, print)
   readFile(smallFile, print)
 })
-async function readAllFiles() {
+
+async function readAllFilesImplicitCB() {
   console.log('started.')
   await read()
   console.log('resumed after await.')
-  console.log('completed.')
+  console.log('>>>>> implicit callback completed.')
 }
-readAllFiles()
+//readAllFilesImplicitCB()
+
+function explicitCallBack() {
+  console.log("<<<<< explicit callback completed.")
+}
+async function readAllFilesExplicitCB() {
+  console.log('started.')
+  await read(explicitCallBack)
+  console.log('resumed after await.')
+  console.log('>>>>> implicit callback completed.')
+}
+readAllFilesExplicitCB()
