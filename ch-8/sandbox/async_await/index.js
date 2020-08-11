@@ -51,6 +51,38 @@ async function runPromiseAllVariableFiles(files) {
 
   return contents.map(getLength)
 }
-runPromiseAllVariableFiles(files)
-  .then(console.log)
-  .catch(console.error)
+// runPromiseAllVariableFiles(files)
+//   .then(console.log)
+//   .catch(console.error)
+
+async function runPromiseAllSettled(files) {
+  const readers = files.map(file => readFile(file))
+  const results = await Promise.allSettled(readers);
+
+  results
+    .filter(({status}) => status === 'rejected')
+    .forEach(({reason}) => console.warn(reason))
+
+  const data = results
+                .filter(({status}) => status === 'fulfilled')
+                .map(({value}) => getLength(value))
+
+  console.log(data)
+}
+// runPromiseAllSettled(files)
+
+async function runParallelExecution() {
+  const readSmallFile = readFile(smallFile)
+  const readMediumFile = readFile(mediumFile)
+  const readBigFile = readFile(bigFile)
+
+  readBigFile.then(printLength)
+  readMediumFile.then(printLength)
+  readSmallFile.then(printLength)
+
+  await readBigFile
+  await readMediumFile
+  await readSmallFile
+}
+// runParallelExecution()
+//   .catch(console.error)
