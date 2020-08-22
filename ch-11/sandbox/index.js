@@ -30,7 +30,6 @@ const decoder = new StringDecoder()
 result = decoder.write(frag1)
 result = decoder.write(frag2)
 
-
 // Buffer to JSON
 const buffer2 = Buffer.from('👀')
 result = buffer2.toJSON()
