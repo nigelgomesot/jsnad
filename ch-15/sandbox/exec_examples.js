@@ -24,4 +24,14 @@ const exec2 = () => {
     }
   )
 }
-exec2()
+// exec2()
+
+// subprocess error without callback (ChildProcess instance)
+const exec3 = () => {
+  const sp = exec(`${process.execPath} -e "console.log(subprocess stdio output.)"`)
+
+  console.log('subprocess PID:', sp.pid)
+  sp.stdout.pipe(process.stdout)
+  sp.on('close', status => console.log('subprocess exit status:', status))
+}
+exec3()
