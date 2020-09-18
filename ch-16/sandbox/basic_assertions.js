@@ -20,7 +20,10 @@ if (false)
   assert.notEqual(val1, val1)
 
 if (false)
- assert.strictEqual(val1, 'true')
+ assert.strictEqual(val1, '1')
+
+if (false)
+ assert.notStrictEqual(val1, 1)
 
 if (false)
  assert.deepEqual(obj1, obj2)
