@@ -1,0 +1,16 @@
+{
+  "name": "test_framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "add.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "tap": "^14.10.8"
+  }
+}
