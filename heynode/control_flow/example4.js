@@ -1,10 +1,10 @@
 // REF: http://book.mixu.net/node/ch7.html#series
 
-const custom_async = (arg, cb) => {
+const custom_async = (arg, callback) => {
   const delay =  Math.floor(Math.random() * 5 + 1) * 100
   console.log(`async with arg: ${arg} & return in ${delay} ms`)
   setTimeout(() => {
-    cb(arg * 2)
+    callback(arg * 2)
   }, delay)
 }
 
@@ -20,8 +20,8 @@ const series = (callbacks, last) => {
     const callback = callbacks.shift()
 
     if (callback) {
-      callback(() => {
-        console.log('arguments', arguments)
+      callback(function() {
+        //console.log('arguments', arguments)
         results.push(Array.prototype.slice.call(arguments))
         next();
       })
