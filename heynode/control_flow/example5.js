@@ -19,7 +19,7 @@ const fullParallel = (callbacks, last) => {
   let result_count = 0
 
   callbacks.forEach((callback, index) => {
-    callback(() => {
+    callback(function() {
       results[index] = Array.prototype.slice.call(arguments)
       result_count++
 
