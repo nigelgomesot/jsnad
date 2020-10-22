@@ -44,4 +44,11 @@ const final = results => {
   console.log('done.')
 }
 
-// PENDING
+limited(3,[
+  next => { custom_async(1, next)},
+  next => { custom_async(2, next)},
+  next => { custom_async(3, next)},
+  next => { custom_async(4, next)},
+  next => { custom_async(5, next)},
+  next => { custom_async(6, next)},
+], final)
