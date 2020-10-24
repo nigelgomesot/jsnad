@@ -3,18 +3,18 @@
 const limited = (limit, callbacks, last) => {
   const results = []
   let running = 1
-  let task = 0
+  var task = 0
 
-  const next = () => {
+  function next() {
     running--
 
     if (task == callbacks.length && running == 0)
       last(results)
 
-    while (running < limit && callbacks[task]) {
-      let callback = callbacks[task]
+    while(running < limit && callbacks[task]) {
+      var callback = callbacks[task];
 
-      (function(index) {
+      (index => {
         callback(function() {
           results[index] = Array.prototype.slice.call(arguments)
           next()
@@ -45,10 +45,10 @@ const final = results => {
 }
 
 limited(3,[
-  next => { custom_async(1, next)},
-  next => { custom_async(2, next)},
-  next => { custom_async(3, next)},
-  next => { custom_async(4, next)},
-  next => { custom_async(5, next)},
-  next => { custom_async(6, next)},
+  next => { custom_async(1, next) },
+  next => { custom_async(2, next) },
+  next => { custom_async(3, next) },
+  next => { custom_async(4, next) },
+  next => { custom_async(5, next) },
+  next => { custom_async(6, next) },
 ], final)
