@@ -35,32 +35,25 @@ const runParallel = (cb) => {
   let pending = 0
 
   fastFunction((err, result) => {
-    gateKeeper()
+    gateKeeper(err, result)
   })
 
   mediumFunction((err, result) => {
-    gateKeeper()
+    gateKeeper(err, result)
   })
 
   slowFunction((err, result) => {
-    gateKeeper()
+    gateKeeper(err, result)
   })
 
-  function gateKeeper() {
-    let order = pending
-    pending++
-    console.log('in gatekeeper')
+  function gateKeeper(err, result) {
+    if (err) return cb(err)
 
-    return (err, data) => {
-      pending--
+    results.push(result)
 
-      if (err) return done(err)
+    if (results.length == 3) {
+      return cb(null, results)
 
-      results.push(data)
-
-      if (!pending) {
-        return cb(null, results)
-      }
     }
   }
 }
@@ -72,3 +65,5 @@ runParallel((err, results) => {
   console.log('results:', results)
   console.timeEnd('callback runParallel')
 })
+
+// PENDING: gaurantee results order.
