@@ -34,6 +34,10 @@ const runParallel = (cb) => {
   const results = []
   let pending = 0
 
+  slowFunction((err, result) => {
+    gateKeeper(err, result)
+  })
+
   fastFunction((err, result) => {
     gateKeeper(err, result)
   })
@@ -42,18 +46,15 @@ const runParallel = (cb) => {
     gateKeeper(err, result)
   })
 
-  slowFunction((err, result) => {
-    gateKeeper(err, result)
-  })
-
   function gateKeeper(err, result) {
+    const index = pending++
+
     if (err) return cb(err)
 
-    results.push(result)
+    results[index] = result
 
-    if (results.length == 3) {
+    if (pending == 3) {
       return cb(null, results)
-
     }
   }
 }
