@@ -59,12 +59,43 @@ const runParallel = (cb) => {
   }
 }
 
-console.time('callback runParallel')
-runParallel((err, results) => {
-  if(err) console.warn('error occurred:', err)
-  else console.log('done.')
-  console.log('results:', results)
-  console.timeEnd('callback runParallel')
-})
+// console.time('callback runParallel')
+// runParallel((err, results) => {
+//   if(err) console.warn('error occurred:', err)
+//   else console.log('done.')
+//   console.log('results:', results)
+//   console.timeEnd('callback runParallel')
+// })
 
-// PENDING: gaurantee results order.
+
+const runParallel2 = (collection, callback) => {
+  const results = []
+  let pending = 0
+  let alreadyCallback = false
+
+  collection.forEach(obj => async_custom(obj, gateKeeper()))
+
+  function gate(err, data) {
+    if (!alreadyCallback) {
+      alreadyCallback = true
+
+      return callback(err, data)
+    }
+  }
+
+  function gateKeeper() {
+    let order = pending
+    pending++
+
+    return (err, result) => {
+      pending--
+
+      if (err) return gate(err)
+
+      results[order] = result
+      if (!pending) gate(null, result)
+    }
+  }
+}
+
+// PENDING async_custom & call.
