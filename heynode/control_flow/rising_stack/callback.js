@@ -30,7 +30,7 @@ const runSerial = (cb) => {
 
 
 // REF: https://www.alxolr.com/articles/learning-asynchronous-programming-in-node-js-with-callbacks#run-in-parallel
-const runParallel = (cb) => {
+const runParallelOld = (cb) => {
   const results = []
   let pending = 0
 
@@ -59,16 +59,16 @@ const runParallel = (cb) => {
   }
 }
 
-// console.time('callback runParallel')
-// runParallel((err, results) => {
+// console.time('callback runParallelOld')
+// runParallelOld((err, results) => {
 //   if(err) console.warn('error occurred:', err)
 //   else console.log('done.')
 //   console.log('results:', results)
-//   console.timeEnd('callback runParallel')
+//   console.timeEnd('callback runParallelOld')
 // })
 
 
-const runParallel2 = (collection, callback) => {
+const runParallelOld2 = (collection, callback) => {
   const results = []
   let pending = 0
   let alreadyCallback = false
@@ -98,4 +98,109 @@ const runParallel2 = (collection, callback) => {
   }
 }
 
-// PENDING async_custom & call.
+const async_custom = (obj, callback) => {
+  switch(obj.speed) {
+    case 'fast':
+      fastFunction((err, result) => {
+        console.log('ff result', result)
+        callback(err, result)
+      })
+      break
+    case 'medium':
+      mediumFunction((err, result) => {
+        callback(err, result)
+      })
+      break
+    case 'slow':
+      slowFunction((err, result) => {
+        callback(err, result)
+      })
+      break
+    default:
+      callback('spped not specified')
+  }
+}
+
+// const objects = [
+//   //{ id: 1, speed: 'slow' },
+//   { id: 2, speed: 'fast' },
+//   //{ id: 3, speed: 'medium' },
+// ]
+
+// runParallelOld2(objects, (err, results) => {
+//   if (err) { console.warn('error occurred:', err)}
+
+//   console.log('results:', results)
+//   console.log('done')
+// })
+
+
+// REF: https://dev.to/alemagio/node-parallel-execution-2h8p
+
+const processTask = (err, result) => {
+  if(err) {
+    results[index] << `${speed}:error`
+    return
+  }
+
+  const index = result.index
+  const speed = result.speed
+  const data = result.data
+  results[index] << `${speed}:done:${data}`
+}
+
+const buildTask = (index, speed, callback) => {
+  results[index] << `${speed}:pending`
+
+  let task_err
+  let task_result = {
+    index: index,
+    speed: speed,
+    data: null
+  }
+  switch(speed) {
+    case 'fast':
+      fastFunction((err, data) => {
+        task_err = err
+        task_result.data = data
+        callback(task_err, task_result)
+      })
+      break
+    case 'medium':
+      mediumFunction((err, data) => {
+        task_err = err
+        task_result.data = data
+        callback(task_err, task_result)
+      })
+      break
+    case 'slow':
+      slowFunction((err, data) => {
+        task_err = err
+        task_result.data = data
+        callback(task_err, task_result)
+      })
+      break
+  }
+}
+
+const tasks = [
+  (cb) => buildTask(0, 'slow', processTask),
+  (cb) => buildTask(1, 'fast', processTask),
+  (cb) => buildTask(2, 'medium', processTask),
+]
+
+const runParallel = (tasks) => {
+  let completed = 0
+
+  for (let task of tasks) {
+    task(() => {
+      console.log('processing')
+      if (++completed === tasks.length)
+        console.log('results completed:', results)
+    })
+  }
+}
+
+runParallel(tasks)
+
+// PENDING: task callback not called.
