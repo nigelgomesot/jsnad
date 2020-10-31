@@ -20,6 +20,7 @@ const mediumFunction = (done) => {
   setTimeout(() => {
     console.timeEnd('mediumFunction')
     done(null, 'mediumFunction')
+    //done('mediumFunction error')
   }, 3000)
 }
 
@@ -28,6 +29,7 @@ const slowFunction = (done) => {
   setTimeout(() => {
     console.timeEnd('slowFunction')
     done(null, 'slowFunction')
+    //done('slowFunction error')
   }, 5000)
 }
 

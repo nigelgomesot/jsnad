@@ -3,6 +3,7 @@
 
 const { fastFunction, mediumFunction, slowFunction } = require('./helpers')
 const results = []
+
 const runSerial = (cb) => {
   fastFunction((err, result) => {
     if (err) return cb(err)
@@ -138,19 +139,18 @@ const async_custom = (obj, callback) => {
 // REF: https://dev.to/alemagio/node-parallel-execution-2h8p
 
 const processTask = (err, result) => {
-  if(err) {
-    results[index] << `${speed}:error`
-    return
-  }
-
   const index = result.index
   const speed = result.speed
   const data = result.data
-  results[index] << `${speed}:done:${data}`
+
+  if(err)
+    results[index] = `${speed}:error:${err}`
+  else
+    results[index] = `${speed}:done:${data}`
 }
 
-const buildTask = (index, speed, callback) => {
-  results[index] << `${speed}:pending`
+const buildTask = (index, speed, done) => {
+  results[index] = `${speed}:pending`
 
   let task_err
   let task_result = {
@@ -163,30 +163,33 @@ const buildTask = (index, speed, callback) => {
       fastFunction((err, data) => {
         task_err = err
         task_result.data = data
-        callback(task_err, task_result)
+        processTask(task_err, task_result)
+        done()
       })
       break
     case 'medium':
       mediumFunction((err, data) => {
         task_err = err
         task_result.data = data
-        callback(task_err, task_result)
+        processTask(task_err, task_result)
+        done()
       })
       break
     case 'slow':
       slowFunction((err, data) => {
         task_err = err
         task_result.data = data
-        callback(task_err, task_result)
+        processTask(task_err, task_result)
+        done()
       })
       break
   }
 }
 
 const tasks = [
-  (cb) => buildTask(0, 'slow', processTask),
-  (cb) => buildTask(1, 'fast', processTask),
-  (cb) => buildTask(2, 'medium', processTask),
+  (done) => buildTask(0, 'slow', done),
+  (done) => buildTask(1, 'fast', done),
+  (done) => buildTask(2, 'medium', done),
 ]
 
 const runParallel = (tasks) => {
@@ -194,13 +197,12 @@ const runParallel = (tasks) => {
 
   for (let task of tasks) {
     task(() => {
-      console.log('processing')
-      if (++completed === tasks.length)
+      if (++completed < tasks.length)
+        console.log('results processing', results)
+      else
         console.log('results completed:', results)
     })
   }
 }
 
 runParallel(tasks)
-
-// PENDING: task callback not called.
