@@ -205,4 +205,36 @@ const runParallel = (tasks) => {
   }
 }
 
-runParallel(tasks)
+// runParallel(tasks)
+
+tasks.push((done) => buildTask(3, 'fast', done))
+
+const runParallelLimited = (tasks) => {
+  let completed = 0
+  let running = 0
+  let taskIndex = 0
+  let tasksCount = tasks.length
+
+  const run = () => {
+    if (completed >= tasksCount) {
+      console.log('results completed:', results)
+    }
+
+    while (running < 2 && taskIndex < tasksCount) {
+      const task = tasks[taskIndex]
+
+      task(() => {
+        completed++
+        running--
+        run()
+      })
+      console.log('results processing', results)
+      taskIndex++
+      running++
+    }
+  }
+
+  run()
+}
+
+runParallelLimited(tasks)
