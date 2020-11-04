@@ -4,20 +4,22 @@ const { fastFunctionPromise, mediumFunctionPromise, slowFunctionPromise } = requ
 const results = []
 
 const runSerial = () => {
-  slowFunctionPromise()
-    .then(() => {
-      results.push('slowFunction')
-      return mediumFunctionPromise()
-    })
-    .then(() => {
-      results.push('mediumFunction')
-      return fastFunctionPromise()
-    })
-    .then(() => {
-      results.push('fastFunction')
 
-      return Promise.resolve()
-    })
+  return new Promise((resolve, reject) => {
+    return Promise.resolve()
+      .then(() => {
+        slowFunctionPromise()
+          .then(result => results.push)
+      })
+      .then(() => {
+        mediumFunctionPromise()
+          .then(result => results.push)
+      })
+      .then(() => {
+        fastFunctionPromise()
+        .then(result => results.push)
+      })
+  })
 }
 
 console.time('promise runSerial')
@@ -33,4 +35,4 @@ runSerial()
     console.timeEnd('promise runSerial')
   })
 
-// PENDING
+  // PENDING
