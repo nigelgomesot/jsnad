@@ -5,20 +5,18 @@ const results = []
 
 const runSerial = () => {
 
-  return new Promise((resolve, reject) => {
-    return Promise.resolve()
-      .then(() => {
-        slowFunctionPromise()
-          .then(result => results.push)
-      })
-      .then(() => {
-        mediumFunctionPromise()
-          .then(result => results.push)
-      })
-      .then(() => {
-        fastFunctionPromise()
-        .then(result => results.push)
-      })
+  return  new Promise((resolve, reject) => {
+      slowFunctionPromise()
+        .then(result => results.push(result))
+        .then(() => {
+          mediumFunctionPromise()
+            .then(result => results.push(result))
+            .then(() => {
+              fastFunctionPromise()
+                .then(result => results.push(result))
+                .then(() => resolve())
+            })
+        })
   })
 }
 
