@@ -34,16 +34,16 @@ const runSerial = () => {
 //   })
 
 const runParallel = (tasks) => {
-  return Promise.all(tasks.map((task) => {
+  return Promise.all(tasks.map((task, index) => {
     return task
-            .then(result => results.push(result))
+            .then(result => results[index] = result)
             .catch(err => {console.warn})
   }))
 }
 const tasks = [
+  mediumFunctionPromise(),
   slowFunctionPromise(),
   fastFunctionPromise(),
-  mediumFunctionPromise(),
 ]
 console.time('promise runParallel')
 runParallel(tasks)
@@ -58,4 +58,4 @@ runParallel(tasks)
     console.timeEnd('promise runParallel')
   })
 
-// PENDING: ensure tasks order in results is the same.
+// PENDING: parallel limited
