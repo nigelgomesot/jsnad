@@ -20,8 +20,33 @@ const runSerial = () => {
   })
 }
 
-console.time('promise runSerial')
-runSerial()
+// console.time('promise runSerial')
+// runSerial()
+//   .then(() => {
+//     console.log('done.')
+//     console.log('results:', results)
+//   })
+//   .catch((err) => {
+//     console.warn('error occurred:', err)
+//   })
+//   .then(() => {
+//     console.timeEnd('promise runSerial')
+//   })
+
+const runParallel = (tasks) => {
+  return Promise.all(tasks.map((task) => {
+    return task
+            .then(result => results.push(result))
+            .catch(err => {console.warn})
+  }))
+}
+const tasks = [
+  slowFunctionPromise(),
+  fastFunctionPromise(),
+  mediumFunctionPromise(),
+]
+console.time('promise runParallel')
+runParallel(tasks)
   .then(() => {
     console.log('done.')
     console.log('results:', results)
@@ -30,7 +55,7 @@ runSerial()
     console.warn('error occurred:', err)
   })
   .then(() => {
-    console.timeEnd('promise runSerial')
+    console.timeEnd('promise runParallel')
   })
 
-  // PENDING
+// PENDING: ensure tasks order in results is the same.
