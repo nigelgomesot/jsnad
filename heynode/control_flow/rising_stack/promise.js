@@ -40,22 +40,46 @@ const runParallel = (tasks) => {
             .catch(err => {console.warn})
   }))
 }
-const tasks = [
-  mediumFunctionPromise(),
-  slowFunctionPromise(),
-  fastFunctionPromise(),
-]
-console.time('promise runParallel')
-runParallel(tasks)
-  .then(() => {
-    console.log('done.')
-    console.log('results:', results)
+// const tasks = [
+//   mediumFunctionPromise(),
+//   slowFunctionPromise(),
+//   fastFunctionPromise(),
+// ]
+// console.time('promise runParallel')
+// runParallel(tasks)
+//   .then(() => {
+//     console.log('done.')
+//     console.log('results:', results)
+//   })
+//   .catch((err) => {
+//     console.warn('error occurred:', err)
+//   })
+//   .then(() => {
+//     console.timeEnd('promise runParallel')
+//   })
+
+// REF: https://glebbahmutov.com/blog/run-n-promises-in-parallel/#using-es6-promises
+const task = (ms) => {
+  return new Promise((resolve, reject) => {
+    console.log(`processing ${ms}`)
+    setTimeout(() => {
+      resolve(ms)
+    }, ms)
   })
-  .catch((err) => {
-    console.warn('error occurred:', err)
+}
+
+const nextTask = () => {
+  if (tasks.length)
+    return task(tasks.shift())
+}
+
+const runParallelLimited = () => {
+  return Promise.resolve().then(function next() {
+    return nextTask().then(next)
   })
-  .then(() => {
-    console.timeEnd('promise runParallel')
-  })
+}
+
+const tasks = [400, 100, 200, 300]
+runParallelLimited()
 
 // PENDING: parallel limited
