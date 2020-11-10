@@ -33,7 +33,7 @@ const runSerial = () => {
 //     console.timeEnd('promise runSerial')
 //   })
 
-const runParallel = (tasks) => {
+const runParallelOld = (tasks) => {
   return Promise.all(tasks.map((task, index) => {
     return task
             .then(result => results[index] = result)
@@ -59,27 +59,26 @@ const runParallel = (tasks) => {
 //   })
 
 // REF: https://glebbahmutov.com/blog/run-n-promises-in-parallel/#using-es6-promises
-const task = (ms) => {
+const task = (ms, index) => {
+  console.log(`⏳ task with ${ms}ms started`)
+
   return new Promise((resolve, reject) => {
-    console.log(`processing ${ms}`)
+    console.time(`✅ task with ${ms}ms ended`)
     setTimeout(() => {
+      console.timeEnd(`✅ task with ${ms}ms ended`)
+
+      results[index] = ms
+      console.log('🔵 results:', results)
       resolve(ms)
     }, ms)
   })
 }
 
-const nextTask = () => {
-  if (tasks.length)
-    return task(tasks.shift())
-}
+const durations = [5000, 3000, 1000, 2000, 4000]
 
-const runParallelLimited = () => {
-  return Promise.resolve().then(function next() {
-    return nextTask().then(next)
-  })
-}
+console.time('🛑 promise runParallel')
+Promise.all(durations.map((duration, index) => task(duration, index)))
+  .then(() => console.timeEnd('🛑 promise runParallel'))
 
-const tasks = [400, 100, 200, 300]
-runParallelLimited()
-
+// PENDING: serial
 // PENDING: parallel limited
