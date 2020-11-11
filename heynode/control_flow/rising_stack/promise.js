@@ -3,7 +3,7 @@
 const { fastFunctionPromise, mediumFunctionPromise, slowFunctionPromise } = require('./helpers')
 const results = []
 
-const runSerial = () => {
+const runSerialOld = () => {
 
   return  new Promise((resolve, reject) => {
       slowFunctionPromise()
@@ -20,8 +20,8 @@ const runSerial = () => {
   })
 }
 
-// console.time('promise runSerial')
-// runSerial()
+// console.time('promise runSerialOld')
+// runSerialOld()
 //   .then(() => {
 //     console.log('done.')
 //     console.log('results:', results)
@@ -30,7 +30,7 @@ const runSerial = () => {
 //     console.warn('error occurred:', err)
 //   })
 //   .then(() => {
-//     console.timeEnd('promise runSerial')
+//     console.timeEnd('promise runSerialOld')
 //   })
 
 const runParallelOld = (tasks) => {
@@ -76,9 +76,20 @@ const task = (ms, index) => {
 
 const durations = [5000, 3000, 1000, 2000, 4000]
 
-console.time('🛑 promise runParallel')
-Promise.all(durations.map((duration, index) => task(duration, index)))
+const runParallel = () => {
+  console.time('🛑 promise runParallel')
+  Promise.all(durations.map((duration, index) => task(duration, index)))
   .then(() => console.timeEnd('🛑 promise runParallel'))
+}
+//runParallel()
 
-// PENDING: serial
+const runSerial = () => {
+  console.time('🛑 promise runSerial')
+  return durations.reduce((chain, duration, index) => {
+    return chain.then(() => task(duration, index))
+  }, Promise.resolve())
+  .then(() => console.timeEnd('🛑 promise runSerial'))
+}
+runSerial()
+
 // PENDING: parallel limited
