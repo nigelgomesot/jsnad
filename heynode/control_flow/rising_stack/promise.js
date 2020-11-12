@@ -76,6 +76,7 @@ const task = (ms, index) => {
 
 const durations = [5000, 3000, 1000, 2000, 4000]
 
+// REF: https://blog.risingstack.com/node-js-async-best-practices-avoiding-callback-hell-node-js-at-scale/#1usingpromises
 const runParallel = () => {
   console.time('🛑 promise runParallel')
   Promise.all(durations.map((duration, index) => task(duration, index)))
@@ -83,6 +84,7 @@ const runParallel = () => {
 }
 //runParallel()
 
+// REF: https://blog.risingstack.com/node-js-async-best-practices-avoiding-callback-hell-node-js-at-scale/#serialtaskexecution
 const runSerial = () => {
   console.time('🛑 promise runSerial')
   return durations.reduce((chain, duration, index) => {
@@ -90,6 +92,42 @@ const runSerial = () => {
   }, Promise.resolve())
   .then(() => console.timeEnd('🛑 promise runSerial'))
 }
-runSerial()
+//runSerial()
 
-// PENDING: parallel limited
+// REF: https://dev.to/alemagio/node-parallel-execution-2h8p#limited-parallel-execution
+const runParallelLimited = () => {
+  console.time('🛑 promise runParallelLimited')
+
+  const concurrency = 2,
+        taskLength = durations.length
+
+  let index = 0,
+      running = 0,
+      completed = 0
+
+  const nextTask = () => {
+    console.log('index', index)
+    console.log('running', running)
+    console.log('completed', completed)
+    if (completed === taskLength)
+      return Promise.resolve()
+
+    while (running < concurrency && index < taskLength) {
+      const duration = durations[index]
+      task(duration, index)
+        .then(() => {
+          completed++
+          running--
+        })
+      running++
+      index++
+    }
+
+    return setTimeout(nextTask(), 5000)
+  }
+
+  nextTask().then(() => console.timeEnd('🛑 promise runParallelLimited'))
+}
+runParallelLimited()
+
+// PENDING: runParallelLimited
