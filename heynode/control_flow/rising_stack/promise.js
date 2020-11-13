@@ -109,8 +109,10 @@ const runParallelLimited = () => {
     console.log('index', index)
     console.log('running', running)
     console.log('completed', completed)
-    if (completed === taskLength)
-      return Promise.resolve()
+    if (completed === taskLength) {
+      console.timeEnd('🛑 promise runParallelLimited')
+      return //Promise.resolve()
+    }
 
     while (running < concurrency && index < taskLength) {
       const duration = durations[index]
@@ -118,15 +120,14 @@ const runParallelLimited = () => {
         .then(() => {
           completed++
           running--
+          nextTask()
         })
       running++
       index++
     }
-
-    return setTimeout(nextTask(), 5000)
   }
 
-  nextTask().then(() => console.timeEnd('🛑 promise runParallelLimited'))
+  nextTask()
 }
 runParallelLimited()
 
