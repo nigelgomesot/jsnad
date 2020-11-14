@@ -111,7 +111,7 @@ const runParallelLimited = () => {
     console.log('completed', completed)
     if (completed === taskLength) {
       console.timeEnd('🛑 promise runParallelLimited')
-      return //Promise.resolve()
+      return
     }
 
     while (running < concurrency && index < taskLength) {
@@ -130,5 +130,3 @@ const runParallelLimited = () => {
   nextTask()
 }
 runParallelLimited()
-
-// PENDING: runParallelLimited

@@ -118,7 +118,7 @@ const async_custom = (obj, callback) => {
       })
       break
     default:
-      callback('spped not specified')
+      callback('speed not specified')
   }
 }
 
@@ -236,5 +236,23 @@ const runParallelLimited = (tasks) => {
 
   run()
 }
+//runParallelLimited(tasks)
 
-runParallelLimited(tasks)
+
+const durations  = [5000, 3000, 1000, 2000, 4000]
+
+const task = (duration, index, cb) => {
+  console.log(`⏳ task with ${duration} ms started`)
+
+  setTimeout(() => {
+    results[index] = duration
+    console.log(`✅ task with ${duration} ms ended`)
+    cb(null, duration)
+  }, duration)
+}
+
+task(3000, 1, (err, result) => {
+  console.log('done', results)
+})
+
+// PENDING: runParallelLimited 2
