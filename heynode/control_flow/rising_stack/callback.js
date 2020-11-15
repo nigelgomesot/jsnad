@@ -192,7 +192,7 @@ const tasks = [
   (done) => buildTask(2, 'medium', done),
 ]
 
-const runParallel = (tasks) => {
+const runParallelOld3 = (tasks) => {
   let completed = 0
 
   for (let task of tasks) {
@@ -205,11 +205,11 @@ const runParallel = (tasks) => {
   }
 }
 
-// runParallel(tasks)
+// runParallelOld3(tasks)
 
 tasks.push((done) => buildTask(3, 'fast', done))
 
-const runParallelLimited = (tasks) => {
+const runParallelLimitedOld = (tasks) => {
   let completed = 0
   let running = 0
   let taskIndex = 0
@@ -236,23 +236,60 @@ const runParallelLimited = (tasks) => {
 
   run()
 }
-//runParallelLimited(tasks)
+//runParallelLimitedOld(tasks)
 
 
 const durations  = [5000, 3000, 1000, 2000, 4000]
 
 const task = (duration, index, cb) => {
   console.log(`⏳ task with ${duration} ms started`)
+  console.time(`✅ task with ${duration} ms ended`)
 
   setTimeout(() => {
     results[index] = duration
-    console.log(`✅ task with ${duration} ms ended`)
+    console.timeEnd(`✅ task with ${duration} ms ended`)
     cb(null, duration)
   }, duration)
 }
 
-task(3000, 1, (err, result) => {
-  console.log('done', results)
-})
+// task(3000, 1, (err, result) => {
+//   console.log('done', results)
+// })
 
-// PENDING: runParallelLimited 2
+const runParallelLimited = () => {
+  console.time('🛑 callback runParallelLimited')
+
+  const concurrency = 2,
+        taskLength = durations.length
+
+  let index = 0,
+      running = 0,
+      completed = 0
+
+  const nextTask = (cb) => {
+    console.log('index', index)
+    console.log('running', running)
+    console.log('completed', completed)
+
+    if (completed === taskLength) {
+      return cb()
+    }
+
+    while (running < concurrency && index < taskLength) {
+      const duration = durations[index]
+
+      task(duration, index, () => {
+        running--
+        completed++
+        nextTask(cb)
+      })
+      running++
+      index++
+    }
+  }
+
+  nextTask(() => {
+    console.timeEnd('🛑 callback runParallelLimited')
+  })
+}
+runParallelLimited()
