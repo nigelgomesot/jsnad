@@ -22,11 +22,11 @@ const task = async (duration, index) => {
 //task(3000, 2).then(() => console.log('done'))
 
 const runParallelLimited = () => {
-  console.log('runParallelLimited started')
-  console.time('runParallelLimited ended')
+  console.time('🛑 async runParallelLimited')
 
   const taskLength = durations.length,
         concurrency = 2
+
   let index = 0,
       running = 0,
       completed = 0
@@ -34,7 +34,7 @@ const runParallelLimited = () => {
   const nextTask = () => {
 
     if (completed == taskLength) {
-      console.timeEnd('runParallelLimited ended')
+      console.timeEnd('🛑 async runParallelLimited')
       return
     }
 
@@ -42,16 +42,15 @@ const runParallelLimited = () => {
       const duration = durations[index]
 
       task(duration, index).then(() => {
-        console.log('processing')
-        return
         running--
         completed++
 
-        return nextTask()
+        nextTask()
       })
+
+      running++
+      index++
     }
-    running++
-    index++
   }
 
   nextTask()
@@ -59,4 +58,4 @@ const runParallelLimited = () => {
 runParallelLimited()
 
 
-// PENDING: runParallelLimited
+// PENDING: async methods
