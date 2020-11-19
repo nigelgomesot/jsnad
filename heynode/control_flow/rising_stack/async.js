@@ -4,7 +4,7 @@
 const durations  = [5000, 3000, 1000, 2000, 4000]
 const results = []
 
-const timer = (duration) => {
+const timerPromise = (duration) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve(duration), duration)
   })
@@ -14,7 +14,7 @@ const task = async (duration, index) => {
   console.log(`⏳ task with ${duration} ms started`)
   console.time(`✅ task with ${duration} ms ended`)
 
-  const result = await timer(duration)
+  const result = await timerPromise(duration)
   results[index] = result
   console.timeEnd(`✅ task with ${duration} ms ended`)
 }
@@ -55,7 +55,37 @@ const runParallelLimited = () => {
 
   nextTask()
 }
-runParallelLimited()
+//runParallelLimited()
 
 
-// PENDING: async methods
+// REF: https://medium.com/velotio-perspectives/understanding-node-js-async-flows-parallel-serial-waterfall-and-queues-6f9c4badbc17
+
+const async = require('async')
+
+const timerCallback = (duration, callback) => {
+  console.log(`⏳ task with ${duration} ms started`)
+  console.time(`✅ task with ${duration} ms ended`)
+
+  setTimeout(() => {
+    callback(null, duration)
+    console.timeEnd(`✅ task with ${duration} ms ended`)
+  }, duration)
+}
+
+const tasks = [
+  (callback) => timerCallback(5000, callback),
+  (callback) => timerCallback(3000, callback),
+  (callback) => timerCallback(4000, callback)
+]
+
+const runAsyncParallel = (tasks) => {
+  console.time('🛑 async parallel')
+
+  async.parallel(tasks, (err, results) => {
+    console.log('results:', results)
+    console.timeEnd('🛑 async parallel')
+  })
+}
+runAsyncParallel(tasks)
+
+// PENDING:
