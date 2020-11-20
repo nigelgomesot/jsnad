@@ -67,8 +67,8 @@ const timerCallback = (duration, callback) => {
   console.time(`✅ task with ${duration} ms ended`)
 
   setTimeout(() => {
-    callback(null, duration)
     console.timeEnd(`✅ task with ${duration} ms ended`)
+    callback(null, duration)
   }, duration)
 }
 
@@ -86,6 +86,15 @@ const runAsyncParallel = (tasks) => {
     console.timeEnd('🛑 async parallel')
   })
 }
-runAsyncParallel(tasks)
+//runAsyncParallel(tasks)
 
-// PENDING:
+
+const runAsyncSeries = (tasks) => {
+  console.time('🛑 async series')
+
+  async.series(tasks, (err, results) => {
+    console.log('results:', results)
+    console.timeEnd('🛑 async series')
+  })
+}
+runAsyncSeries(tasks)
