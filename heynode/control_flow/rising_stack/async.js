@@ -72,7 +72,7 @@ const timerCallback = (duration, callback) => {
   }, duration)
 }
 
-const tasks = [
+const asyncParallelTasks = [
   (callback) => timerCallback(5000, callback),
   (callback) => timerCallback(3000, callback),
   (callback) => timerCallback(4000, callback)
@@ -86,8 +86,14 @@ const runAsyncParallel = (tasks) => {
     console.timeEnd('🛑 async parallel')
   })
 }
-//runAsyncParallel(tasks)
+//runAsyncParallel(asyncParallelTasks)
 
+
+const asyncSeriesTasks = [
+  (callback) => timerCallback(5000, callback),
+  (callback) => timerCallback(3000, callback),
+  (callback) => timerCallback(4000, callback)
+]
 
 const runAsyncSeries = (tasks) => {
   console.time('🛑 async series')
@@ -97,4 +103,41 @@ const runAsyncSeries = (tasks) => {
     console.timeEnd('🛑 async series')
   })
 }
-runAsyncSeries(tasks)
+//runAsyncSeries(asyncSeriesTasks)
+
+
+const fnWaterfallArg0 = (callback) => {
+  timerCallback(5000, (err, result) => {
+    callback(null, result)
+  })
+}
+
+const fnWaterfallArg1 = (arg1, callback) => {
+  timerCallback(3000, (err, result) => {
+    callback(null, arg1, result)
+  })
+}
+
+const fnWaterfallArg2 = (arg1, arg2, callback) => {
+  timerCallback(4000, (err, result) => {
+    const final_result = arg1 + arg2 + result
+
+    callback(null, final_result)
+  })
+}
+
+const asyncWaterfallTasks = [
+    fnWaterfallArg0,
+    fnWaterfallArg1,
+    fnWaterfallArg2
+  ]
+
+const runAsyncWaterfall = (tasks) => {
+  console.time('🛑 async waterfall')
+
+  async.waterfall(tasks, (err, result) => {
+    console.log('result:', result)
+    console.timeEnd('🛑 async waterfall')
+  })
+}
+runAsyncWaterfall(asyncWaterfallTasks)
