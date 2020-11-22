@@ -140,4 +140,32 @@ const runAsyncWaterfall = (tasks) => {
     console.timeEnd('🛑 async waterfall')
   })
 }
-runAsyncWaterfall(asyncWaterfallTasks)
+//runAsyncWaterfall(asyncWaterfallTasks)
+
+
+const q = async.queue((duration, callback) => {
+  timerCallback(duration, (err, result) => {
+    callback(null, result)
+  })
+}, 2)
+
+const asyncQueueCallback = (err, result) => {
+  results.push(result)
+}
+
+const runAsyncQueue = () => {
+  console.time('🛑 async queue')
+
+  q.push(5000, asyncQueueCallback)
+  q.unshift(2000, asyncQueueCallback)
+  q.push(1000, asyncQueueCallback)
+  q.push(4000, asyncQueueCallback)
+  q.push(3000, asyncQueueCallback)
+
+  q.drain(() => {
+    console.log('results:', results)
+    console.timeEnd('🛑 async queue')
+  })
+}
+runAsyncQueue()
+
