@@ -143,15 +143,17 @@ const runAsyncWaterfall = (tasks) => {
 //runAsyncWaterfall(asyncWaterfallTasks)
 
 
-const q = async.queue((duration, callback) => {
-  timerCallback(duration, (err, result) => {
-    callback(null, result)
-  })
-}, 2)
+const concurrency = 2
 
 const asyncQueueCallback = (err, result) => {
   results.push(result)
 }
+
+const q = async.queue((duration, callback) => {
+  timerCallback(duration, (err, result) => {
+    callback(err, result)
+  })
+}, concurrency)
 
 const runAsyncQueue = () => {
   console.time('🛑 async queue')
@@ -167,5 +169,27 @@ const runAsyncQueue = () => {
     console.timeEnd('🛑 async queue')
   })
 }
-runAsyncQueue()
+//runAsyncQueue()
 
+
+const pq = async.priorityQueue((duration, callback) => {
+  timerCallback(duration, (err, result) => {
+    callback(err, result)
+  })
+}, concurrency)
+
+const runAsyncPriorityQueue = () => {
+  console.time('🛑 async priority queue')
+
+  pq.push(1000, 5, asyncQueueCallback)
+  pq.push(2000, 4, asyncQueueCallback)
+  pq.push([3000, 3001, 3002], 3, asyncQueueCallback)
+  pq.push(4000, 2, asyncQueueCallback)
+  pq.push(5000, 1, asyncQueueCallback)
+
+  pq.drain(() => {
+    console.log('results:', results)
+    console.timeEnd('🛑 async priority queue')
+  })
+}
+runAsyncPriorityQueue()
