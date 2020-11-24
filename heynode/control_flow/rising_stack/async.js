@@ -192,4 +192,21 @@ const runAsyncPriorityQueue = () => {
     console.timeEnd('🛑 async priority queue')
   })
 }
-runAsyncPriorityQueue()
+//runAsyncPriorityQueue()
+
+
+const asyncRaceTasks = [
+  (callback) => timerCallback(5000, callback),
+  (callback) => timerCallback(3000, callback),
+  (callback) => timerCallback(4000, callback),
+]
+
+const runAsyncRace = (tasks) => {
+  console.time('🛑 async race')
+
+  async.race(tasks, (err, results) => {
+    console.log('results:', results)
+    console.timeEnd('🛑 async race')
+  })
+}
+runAsyncRace(asyncRaceTasks)
