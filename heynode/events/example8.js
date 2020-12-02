@@ -12,7 +12,7 @@ class CustomEventEmitter {
   }
 
   on(event, fn) {
-    this.addListener(event, fn)
+    return this.addListener(event, fn)
   }
 
   removeListener(event, fn) {
@@ -32,7 +32,7 @@ class CustomEventEmitter {
   }
 
   off(event, fn) {
-    this.removeListener(event, fn)
+    return this.removeListener(event, fn)
   }
 }
 
