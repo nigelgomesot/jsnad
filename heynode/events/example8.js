@@ -34,6 +34,18 @@ class CustomEventEmitter {
   off(event, fn) {
     return this.removeListener(event, fn)
   }
+
+  once(event, fn) {
+    this.listeners[event] = this.listeners[event] || []
+
+    const onceWrapper = () => {
+      fn()
+      this.off(event, onceWrapper)
+    }
+    this.listeners[event].push(onceWrapper)
+
+    return this
+  }
 }
 
 let customEventEmitter,
@@ -73,5 +85,13 @@ customEventEmitter.off('event1', fn1)
 result = customEventEmitter.listeners
 expectedResult = { 'event1': [], 'event2': [fn2] }
 assert.deepEqual(result, expectedResult)
+
+
+// test once
+const fn3 = () => console.log('fn3.invoked')
+customEventEmitter.once('event3', fn3)
+assert.equal(customEventEmitter.listeners['event3'].length, 1)
+customEventEmitter.once('event3', fn3)
+assert.equal(customEventEmitter.listeners['event3'].length, 2)
 
 console.log('done')
