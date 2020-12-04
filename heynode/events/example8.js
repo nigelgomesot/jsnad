@@ -46,6 +46,16 @@ class CustomEventEmitter {
 
     return this
   }
+
+  emit(event, ...args) {
+    const fns = this.listeners[event]
+
+    if (!fns) return false
+
+    fns.forEach(fn => fn(...args))
+
+    return true
+  }
 }
 
 let customEventEmitter,
@@ -93,5 +103,24 @@ customEventEmitter.once('event3', fn3)
 assert.equal(customEventEmitter.listeners['event3'].length, 1)
 customEventEmitter.once('event3', fn3)
 assert.equal(customEventEmitter.listeners['event3'].length, 2)
+
+
+// test emit
+customEventEmitter = new CustomEventEmitter()
+
+result = []
+const fnEmit1 = () => result.push('fnEmit1 invoked')
+customEventEmitter.on('fnEmit1', fnEmit1)
+customEventEmitter.emit('fnEmit1')
+expectedResult = ['fnEmit1 invoked']
+assert.deepEqual(result, expectedResult)
+
+result = []
+const fnEmit2 = () => result.push('fnEmit2 invoked')
+customEventEmitter.on('fnEmit2', fnEmit2)
+customEventEmitter.on('fnEmit2', fnEmit2)
+customEventEmitter.emit('fnEmit2')
+expectedResult = ['fnEmit2 invoked', 'fnEmit2 invoked']
+assert.deepEqual(result, expectedResult)
 
 console.log('done')
