@@ -56,6 +56,16 @@ class CustomEventEmitter {
 
     return true
   }
+
+  listenerCount(event) {
+    const fns = this.listeners[event] || []
+
+    return fns.length
+  }
+
+  rawListeners(event) {
+    return this.listeners[event]
+  }
 }
 
 let customEventEmitter,
@@ -122,5 +132,34 @@ customEventEmitter.on('fnEmit2', fnEmit2)
 customEventEmitter.emit('fnEmit2')
 expectedResult = ['fnEmit2 invoked', 'fnEmit2 invoked']
 assert.deepEqual(result, expectedResult)
+
+//test listenerCount
+customEventEmitter = new CustomEventEmitter()
+
+assert.equal(customEventEmitter.listenerCount('fnListner1'), 0)
+
+const fnListner1 = () => null
+customEventEmitter.on('fnListner1', fnListner1)
+assert.equal(customEventEmitter.listenerCount('fnListner1'), 1)
+
+customEventEmitter.on('fnListner1', fnListner1)
+assert.equal(customEventEmitter.listenerCount('fnListner1'), 2)
+
+
+
+// test rawListeners
+customEventEmitter = new CustomEventEmitter()
+assert.equal(customEventEmitter.rawListeners('fnRawListner1'), undefined)
+
+const fnRawListner1 = () => null
+customEventEmitter.on('fnRawListner1', fnRawListner1)
+assert.deepEqual(customEventEmitter.rawListeners('fnRawListner1'), [fnRawListner1])
+
+const fnRawListner2 = () => null
+customEventEmitter.on('fnRawListner2', fnRawListner2)
+customEventEmitter.on('fnRawListner2', fnRawListner2)
+assert.deepEqual(customEventEmitter.rawListeners('fnRawListner2'), [fnRawListner2, fnRawListner2])
+
+// PENDING: TEST once (when added multiple times)
 
 console.log('done')
