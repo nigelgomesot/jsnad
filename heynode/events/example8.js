@@ -161,5 +161,14 @@ customEventEmitter.on('fnRawListner2', fnRawListner2)
 assert.deepEqual(customEventEmitter.rawListeners('fnRawListner2'), [fnRawListner2, fnRawListner2])
 
 // PENDING: TEST once (when added multiple times)
+customEventEmitter = new CustomEventEmitter()
+const fnOnceListener1 = () => null
+customEventEmitter.once('fnOnceListener1', fnOnceListener1)
+customEventEmitter.once('fnOnceListener1', fnOnceListener1)
+assert.equal(customEventEmitter.listenerCount('fnOnceListener1'), 2)
+customEventEmitter.emit('fnOnceListener1')
+assert.equal(customEventEmitter.listenerCount('fnOnceListener1'), 1)
+customEventEmitter.emit('fnOnceListener1')
+assert.equal(customEventEmitter.listenerCount('fnOnceListener1'), 0)
 
 console.log('done')
