@@ -21,12 +21,12 @@ const runFailAfterSeconds = () => {
 //runFailAfterSeconds()
 
 const resolvedPromise = Promise.resolve('resolved')
-const rejectedPromise = Promise.reject('rejected')
+const rejectedPromise = Promise.reject(Error('rejected'))
 
 // Promise.all
 const runPromiseAll = () => {
   Promise.all([resolvedPromise, rejectedPromise])
-    .then(results => console.log('results', results))
+    .then(results => console.log('results:', results))
     .catch(err => console.warn('error:', err))
     .finally(() => console.log('Promise.all done.'))
 }
@@ -35,13 +35,22 @@ const runPromiseAll = () => {
 // Promise.race
 const runPromiseRace = () => {
   Promise.race([resolvedPromise, rejectedPromise])
-    .then(results => console.log('results', results))
+    .then(results => console.log('results:', results))
     .catch(err => console.warn('error:', err))
     .finally(() => console.log('Promise.race done.'))
 
   Promise.race([rejectedPromise, resolvedPromise])
-    .then(results => console.log('results', results))
+    .then(results => console.log('results:', results))
     .catch(err => console.warn('error:', err))
     .finally(() => console.log('Promise.race done.'))
 }
-runPromiseRace()
+//runPromiseRace()
+
+// Promise.allSettled
+const runPromiseAllSettled = () => {
+  Promise.allSettled([resolvedPromise, rejectedPromise])
+    .then(results => console.log('results:', results))
+    .catch(err => console.warn('error:', err))
+    .finally(() => console.log('Promise.allSettled done'))
+}
+runPromiseAllSettled()
