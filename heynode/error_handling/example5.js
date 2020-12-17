@@ -19,7 +19,6 @@ const runGenerateFn1ViaHandler = () => {
 //runGenerateFn1ViaHandler()
 
 // async error handing via Iterator
-
 const runGenerateFn1ViaIterator = async () => {
   try {
     for await (const value of generateFn1())
@@ -30,4 +29,26 @@ const runGenerateFn1ViaIterator = async () => {
     console.log('runGenerateFn1ViaIterator done.')
   }
 }
-runGenerateFn1ViaIterator()
+//runGenerateFn1ViaIterator()
+
+// async error thrown from outside is sent inside the generator
+async function* generatorFn2() {
+  try {
+    yield 33
+    yield 39
+  } catch (error) {
+    console.error('inside error:', error.message)
+  }
+}
+
+const runGenerateFn2ViaHandler = () => {
+  const go = generatorFn2()
+
+  go.next().then(value => console.log('value:', value))
+
+  go.throw(Error('custom error'))
+    .catch(error => console.error('outside error:', error.message))
+
+  go.next().then(value => console.log('value:', value))
+}
+runGenerateFn2ViaHandler()
