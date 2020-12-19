@@ -1,6 +1,6 @@
 // REF: https://www.valentinog.com/blog/error/#asynchronous-error-handling-in-nodejs-the-callback-pattern
 
-// Error handling via callback in Node.js
+// Node.js Error handling via callback
 const { readFile } = require('fs')
 
 const errorHandler = (error) => {
