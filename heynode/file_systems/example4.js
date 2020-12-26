@@ -58,4 +58,28 @@ const writeCustomerProfile = () => {
     console.log('customer profile saved.')
   })
 }
-writeCustomerProfile()
+//writeCustomerProfile()
+
+// Update JSON in file
+const incrementOrderCount = () => {
+  const filePath = './example4_update.json'
+
+  jsonFileReader(filePath, (err, customerProfile) => {
+    if (err) {
+      console.error('read error occurred:', err.message)
+
+      return
+    }
+
+    console.log('read done.')
+    customerProfile.order_count++
+
+    jsonFileWriter(filePath, customerProfile, err => {
+      if (err)
+        console.error('write error occurred:', err.message)
+      else
+        console.log('write done.')
+    })
+  })
+}
+incrementOrderCount()
