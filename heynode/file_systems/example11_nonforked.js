@@ -10,7 +10,7 @@ const longComputation =  () => {
 
   const message = 'longComputation done.'
   console.log(message)
-s
+
   return message
 }
 
