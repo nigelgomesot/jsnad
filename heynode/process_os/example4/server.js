@@ -33,12 +33,12 @@ app.get('/auth', (req, res) => {
     return res.sendStatus(400)
 
   const { salt, hash } = users[username]
-  const encryptHash = crypto.pbkdf2Sync(password, salt, 10000, 512, 'sha512')
-
-  if (crypto.timingSafeEqual(hash, encryptHash))
-    res.sendStatus(200)
-  else
-    res.sendStatus(401)
+  crypto.pbkdf2(password, salt, 10000, 512, 'sha512', (err, encryptHash) => {
+    if (hash.toString() === encryptHash.toString())
+      res.sendStatus(200)
+    else
+      res.sendStatus(401)
+  })
 })
 
 app.listen(port, () => console.log(`app listening at port:${port}`))
