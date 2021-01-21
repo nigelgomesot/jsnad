@@ -13,3 +13,24 @@ describe('testing callbacks', () => {
     })
   })
 })
+
+// Promises
+describe('testing promises', () => {
+  const upperCasePromise = str => {
+    return new Promise((resolve, reject) => {
+      if (!str) {
+        reject('empty string')
+
+        return
+      }
+
+      resolve(str.toUpperCase())
+    })
+  }
+
+  test('converts str to upper case via promise', () => {
+    return upperCasePromise('test').then(str => {
+      expect(str).toBe('TEST')
+    })
+  })
+})
