@@ -16,4 +16,5 @@ const run = (command, options = []) => {
 //run('node', ['-v'])
 //run('node', ['-e', 'console.log(3 + 2)'])
 //run('node', ['-p', '3 + 2']) // same as eval without console.log
-run('node', ['-c', 'example1.1.js']) // checks syntax without executing file
+//run('node', ['-c', 'example1.1.js']) // checks syntax without executing file
+run('node', ['--prof', 'example1.2.js'])
